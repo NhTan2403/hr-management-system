@@ -200,6 +200,10 @@ export default function App() {
           )}
         </section>
       </main>
+
+      <footer className="mx-auto max-w-5xl px-4 pb-6 text-center text-xs text-slate-400">
+        Phiên bản 1.0.1 · Deploy tự động bằng GitHub Actions
+      </footer>
     </div>
   )
 }
