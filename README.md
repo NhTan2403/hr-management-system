@@ -1,6 +1,6 @@
-# MVP — Danh sách thực tập chuyên ngành
+# MVP — Hệ Thống Quản Lý Nhân Sự
 
-Ứng dụng CRUD 1 bảng (`interns`) cho môn Phân tích thiết kế hệ thống.
+Ứng dụng CRUD 1 bảng (`employees`) cho môn Phân tích thiết kế hệ thống.
 
 - **Frontend**: React (Vite) + Tailwind CSS — thư mục `frontend/`
 - **Backend**: Java 17 + Spring Boot (REST API) — thư mục `backend/`

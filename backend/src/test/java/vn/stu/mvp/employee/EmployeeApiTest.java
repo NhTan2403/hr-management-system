@@ -1,4 +1,4 @@
-package vn.stu.mvp.intern;
+package vn.stu.mvp.employee;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,14 +17,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class InternApiTest {
+class EmployeeApiTest {
 
     private static final String BODY = """
-            {"studentCode":"DH52100001","fullName":"Nguyễn Văn A",
-             "companyName":"Công ty ABC","position":"Java Intern","startDate":"2026-11-16"}""";
+            {"employeeCode":"NV0001","fullName":"Nguyễn Văn A","email":"a.nguyen@example.com",
+             "department":"Phòng Kỹ thuật","position":"Developer","hireDate":"2026-11-16"}""";
 
     @Autowired MockMvc mvc;
-    @Autowired InternRepository repository;
+    @Autowired EmployeeRepository repository;
 
     @BeforeEach
     void clean() {
@@ -33,34 +33,34 @@ class InternApiTest {
 
     @Test
     void createListUpdateDelete() throws Exception {
-        mvc.perform(post("/api/interns").contentType(MediaType.APPLICATION_JSON).content(BODY))
+        mvc.perform(post("/api/employees").contentType(MediaType.APPLICATION_JSON).content(BODY))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber());
         Long id = repository.findAll().get(0).getId();
 
-        mvc.perform(get("/api/interns"))
+        mvc.perform(get("/api/employees"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].studentCode").value("DH52100001"));
+                .andExpect(jsonPath("$[0].employeeCode").value("NV0001"));
 
-        mvc.perform(put("/api/interns/" + id).contentType(MediaType.APPLICATION_JSON)
-                        .content(BODY.replace("Java Intern", "Tester")))
+        mvc.perform(put("/api/employees/" + id).contentType(MediaType.APPLICATION_JSON)
+                        .content(BODY.replace("Developer", "Tester")))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.position").value("Tester"));
 
-        mvc.perform(delete("/api/interns/" + id)).andExpect(status().isNoContent());
-        mvc.perform(get("/api/interns/" + id)).andExpect(status().isNotFound());
+        mvc.perform(delete("/api/employees/" + id)).andExpect(status().isNoContent());
+        mvc.perform(get("/api/employees/" + id)).andExpect(status().isNotFound());
     }
 
     @Test
     void rejectsBlankNameAndDuplicateCode() throws Exception {
-        mvc.perform(post("/api/interns").contentType(MediaType.APPLICATION_JSON)
+        mvc.perform(post("/api/employees").contentType(MediaType.APPLICATION_JSON)
                         .content(BODY.replace("Nguyễn Văn A", "")))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").exists());
 
-        mvc.perform(post("/api/interns").contentType(MediaType.APPLICATION_JSON).content(BODY))
+        mvc.perform(post("/api/employees").contentType(MediaType.APPLICATION_JSON).content(BODY))
                 .andExpect(status().isCreated());
-        mvc.perform(post("/api/interns").contentType(MediaType.APPLICATION_JSON).content(BODY))
+        mvc.perform(post("/api/employees").contentType(MediaType.APPLICATION_JSON).content(BODY))
                 .andExpect(status().isConflict());
     }
 }

@@ -1,4 +1,4 @@
-package vn.stu.mvp.intern;
+package vn.stu.mvp.employee;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -14,33 +14,33 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/interns")
-public class InternController {
+@RequestMapping("/api/employees")
+public class EmployeeController {
 
-    private final InternService service;
+    private final EmployeeService service;
 
-    public InternController(InternService service) {
+    public EmployeeController(EmployeeService service) {
         this.service = service;
     }
 
     @GetMapping
-    public List<InternResponse> findAll() {
+    public List<EmployeeResponse> findAll() {
         return service.findAll();
     }
 
     @GetMapping("/{id}")
-    public InternResponse findById(@PathVariable Long id) {
+    public EmployeeResponse findById(@PathVariable Long id) {
         return service.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public InternResponse create(@Valid @RequestBody InternRequest request) {
+    public EmployeeResponse create(@Valid @RequestBody EmployeeRequest request) {
         return service.create(request);
     }
 
     @PutMapping("/{id}")
-    public InternResponse update(@PathVariable Long id, @Valid @RequestBody InternRequest request) {
+    public EmployeeResponse update(@PathVariable Long id, @Valid @RequestBody EmployeeRequest request) {
         return service.update(id, request);
     }
 

@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { createIntern, deleteIntern, errorMessage, listInterns, updateIntern } from './api'
+import { createEmployee, deleteEmployee, errorMessage, listEmployees, updateEmployee } from './api'
 
-const EMPTY = { studentCode: '', fullName: '', companyName: '', position: '', startDate: '' }
+const EMPTY = { employeeCode: '', fullName: '', email: '', department: '', position: '', hireDate: '' }
 
 const FIELDS = [
-  { name: 'studentCode', label: 'Mã sinh viên', required: true, maxLength: 20 },
+  { name: 'employeeCode', label: 'Mã nhân viên', required: true, maxLength: 20 },
   { name: 'fullName', label: 'Họ tên', required: true, maxLength: 100 },
-  { name: 'companyName', label: 'Công ty thực tập', required: true, maxLength: 150 },
+  { name: 'email', label: 'Email', type: 'email', required: true, maxLength: 100 },
+  { name: 'department', label: 'Phòng ban', required: true, maxLength: 100 },
   { name: 'position', label: 'Vị trí', maxLength: 100 },
-  { name: 'startDate', label: 'Ngày bắt đầu', type: 'date' },
+  { name: 'hireDate', label: 'Ngày vào làm', type: 'date' },
 ]
 
 function formatDate(value) {
@@ -18,7 +19,7 @@ function formatDate(value) {
 }
 
 export default function App() {
-  const [interns, setInterns] = useState([])
+  const [employees, setEmployees] = useState([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [form, setForm] = useState(EMPTY)
@@ -30,7 +31,7 @@ export default function App() {
     setLoading(true)
     setLoadError('')
     try {
-      setInterns(await listInterns())
+      setEmployees(await listEmployees())
     } catch (e) {
       setLoadError(errorMessage(e))
     } finally {
@@ -48,15 +49,16 @@ export default function App() {
     setFormError('')
   }
 
-  function startEdit(intern) {
-    setEditingId(intern.id)
+  function startEdit(employee) {
+    setEditingId(employee.id)
     setFormError('')
     setForm({
-      studentCode: intern.studentCode,
-      fullName: intern.fullName,
-      companyName: intern.companyName,
-      position: intern.position || '',
-      startDate: intern.startDate || '',
+      employeeCode: employee.employeeCode,
+      fullName: employee.fullName,
+      email: employee.email,
+      department: employee.department,
+      position: employee.position || '',
+      hireDate: employee.hireDate || '',
     })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -65,10 +67,10 @@ export default function App() {
     event.preventDefault()
     setSaving(true)
     setFormError('')
-    const payload = { ...form, startDate: form.startDate || null }
+    const payload = { ...form, hireDate: form.hireDate || null }
     try {
-      if (editingId) await updateIntern(editingId, payload)
-      else await createIntern(payload)
+      if (editingId) await updateEmployee(editingId, payload)
+      else await createEmployee(payload)
       resetForm()
       await load()
     } catch (e) {
@@ -78,11 +80,11 @@ export default function App() {
     }
   }
 
-  async function handleDelete(intern) {
-    if (!window.confirm(`Xóa sinh viên ${intern.fullName}?`)) return
+  async function handleDelete(employee) {
+    if (!window.confirm(`Xóa nhân viên ${employee.fullName}?`)) return
     try {
-      await deleteIntern(intern.id)
-      if (editingId === intern.id) resetForm()
+      await deleteEmployee(employee.id)
+      if (editingId === employee.id) resetForm()
       await load()
     } catch (e) {
       setLoadError(errorMessage(e))
@@ -93,14 +95,14 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 text-slate-800">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-5">
-          <h1 className="text-xl font-semibold">Danh sách thực tập chuyên ngành</h1>
-          <p className="text-sm text-slate-500">Quản lý sinh viên và nơi thực tập</p>
+          <h1 className="text-xl font-semibold">Hệ Thống Quản Lý Nhân Sự</h1>
+          <p className="text-sm text-slate-500">Quản lý danh sách nhân viên</p>
         </div>
       </header>
 
       <main className="mx-auto max-w-5xl space-y-6 px-4 py-6">
         <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-          <h2 className="mb-3 font-medium">{editingId ? 'Sửa thông tin' : 'Thêm sinh viên thực tập'}</h2>
+          <h2 className="mb-3 font-medium">{editingId ? 'Sửa thông tin' : 'Thêm nhân viên'}</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {FIELDS.map((f) => (
               <label key={f.name} className="block text-sm">
@@ -155,36 +157,38 @@ export default function App() {
           )}
           {loading ? (
             <p className="px-4 py-8 text-center text-sm text-slate-500">Đang tải…</p>
-          ) : interns.length === 0 && !loadError ? (
+          ) : employees.length === 0 && !loadError ? (
             <p className="px-4 py-8 text-center text-sm text-slate-500">
-              Chưa có sinh viên nào. Hãy thêm bằng biểu mẫu phía trên.
+              Chưa có nhân viên nào. Hãy thêm bằng biểu mẫu phía trên.
             </p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
+              <table className="w-full text-left text-sm whitespace-nowrap">
                 <thead className="border-b border-slate-200 bg-slate-50 text-slate-600">
                   <tr>
-                    <th className="px-4 py-3 font-medium">Mã SV</th>
+                    <th className="px-4 py-3 font-medium">Mã NV</th>
                     <th className="px-4 py-3 font-medium">Họ tên</th>
-                    <th className="px-4 py-3 font-medium">Công ty</th>
+                    <th className="px-4 py-3 font-medium">Email</th>
+                    <th className="px-4 py-3 font-medium">Phòng ban</th>
                     <th className="px-4 py-3 font-medium">Vị trí</th>
-                    <th className="px-4 py-3 font-medium">Ngày bắt đầu</th>
+                    <th className="px-4 py-3 font-medium">Ngày vào làm</th>
                     <th className="px-4 py-3" />
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {interns.map((intern) => (
-                    <tr key={intern.id} className="hover:bg-slate-50">
-                      <td className="px-4 py-3 font-mono">{intern.studentCode}</td>
-                      <td className="px-4 py-3">{intern.fullName}</td>
-                      <td className="px-4 py-3">{intern.companyName}</td>
-                      <td className="px-4 py-3">{intern.position || '—'}</td>
-                      <td className="px-4 py-3 whitespace-nowrap">{formatDate(intern.startDate)}</td>
+                  {employees.map((employee) => (
+                    <tr key={employee.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3 font-mono">{employee.employeeCode}</td>
+                      <td className="px-4 py-3">{employee.fullName}</td>
+                      <td className="px-4 py-3">{employee.email}</td>
+                      <td className="px-4 py-3">{employee.department}</td>
+                      <td className="px-4 py-3">{employee.position || '—'}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">{formatDate(employee.hireDate)}</td>
                       <td className="px-4 py-3 text-right whitespace-nowrap">
-                        <button onClick={() => startEdit(intern)} className="mr-3 text-blue-600 hover:underline">
+                        <button onClick={() => startEdit(employee)} className="mr-3 text-blue-600 hover:underline">
                           Sửa
                         </button>
-                        <button onClick={() => handleDelete(intern)} className="text-red-600 hover:underline">
+                        <button onClick={() => handleDelete(employee)} className="text-red-600 hover:underline">
                           Xóa
                         </button>
                       </td>

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: mvp-thuctap
+    name: hr-management-system
   datasource:
     # Mặc định trỏ tới MySQL chạy bằng docker-compose trên máy (cổng 3307).
     # Trên host, đặt biến môi trường DB_URL / DB_USER / DB_PASSWORD.
