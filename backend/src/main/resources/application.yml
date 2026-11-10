@@ -1,0 +1,21 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: mvp-thuctap
+  datasource:
+    # Mặc định trỏ tới MySQL chạy bằng docker-compose trên máy (cổng 3307).
+    # Trên host, đặt biến môi trường DB_URL / DB_USER / DB_PASSWORD.
+    url: ${DB_URL:jdbc:mysql://localhost:3307/mvp?allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${DB_USER:mvp}
+    password: ${DB_PASSWORD:mvp}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+app:
+  cors:
+    # Danh sách origin được phép gọi API, cách nhau bằng dấu phẩy
+    allowed-origins: ${FRONTEND_URL:http://localhost:5173,http://localhost:5174}
