@@ -20,7 +20,7 @@ Backend chạy gói miễn phí của Render nên sẽ ngủ sau khoảng 15 ph�
 Mỗi lần push lên `main`:
 
 1. GitHub Actions chạy test backend và build frontend.
-2. Test qua thì workflow gọi Deploy Hook của Render để deploy backend.
+2. Render (Auto-Deploy: After CI Checks Pass) chờ workflow trên chạy xanh rồi mới deploy backend; test hỏng thì không deploy. Nếu đặt secret `RENDER_DEPLOY_HOOK` thì workflow gọi thẳng Deploy Hook.
 3. Frontend được deploy lên Vercel (qua kết nối GitHub của Vercel; nếu đặt `VERCEL_TOKEN` thì workflow tự deploy bằng Vercel CLI).
 
 Tài liệu: [API contract](docs/API_CONTRACT.md) · [Database](docs/DATABASE.md)
